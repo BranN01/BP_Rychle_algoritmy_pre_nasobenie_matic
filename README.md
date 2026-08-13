@@ -1,1 +1,1 @@
-# BP_Rychle_algoritmy_pre_nasobenie_matic
+# Rýchle algoritmy pre násobenie matic
