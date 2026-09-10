@@ -10,12 +10,19 @@
 #ifndef MAIN_H
 #define MAIN_H
 
+#define ALGORITHM_COUNT 2
+
 #include <stdio.h>
 #include <stdlib.h>
 #include <signal.h>
 #include <time.h>
+#include <string.h>
+#include <ctype.h>
+#include <stdbool.h>
 
 #include "error.h"
+#include "basic.h"
+#include "strassen.h"
 
 typedef struct global_struct {
     float *mtx_A;
