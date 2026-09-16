@@ -31,4 +31,34 @@ void basic(unsigned n) {
 
     printf("Time to compute: \t %fs\n\n", sec);
     fprintf(stderr, "========================================================================\n");
+
+    // clearing C matrix
+    memset(g.mtx_C, 0, n * n * sizeof(float));
+}
+
+
+void basic_optimized(unsigned n) {
+
+    printf("Algorithm: \t\t Optimized Basic\n");
+
+    struct timespec start, end;
+    clock_gettime(CLOCK_MONOTONIC, &start);
+
+    for(unsigned idx = 0; idx < n; idx++) {
+        for(unsigned kdx = 0; kdx < n; kdx++) {
+            float reg = g.mtx_A[idx * n + kdx];
+            for(unsigned jdx = 0; jdx < n; jdx++) {
+                g.mtx_C[idx * n + jdx] += reg * g.mtx_B[kdx * n + jdx];
+            }
+        }
+    }
+
+    clock_gettime(CLOCK_MONOTONIC, &end);
+    double sec = (end.tv_sec - start.tv_sec) + (end.tv_nsec - start.tv_nsec) / 1000000000.0;
+
+    printf("Time to compute: \t %fs\n\n", sec);
+    fprintf(stderr, "========================================================================\n");
+
+    // clearing C matrix
+    memset(g.mtx_C, 0, n * n * sizeof(float));
 }

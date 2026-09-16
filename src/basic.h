@@ -27,4 +27,12 @@
  */
 void basic(unsigned n);
 
+/**
+ * @brief function to run basic optimized algorithm for matrix multiplication
+ * 
+ * @param n matrix size (n x n)
+ * 
+ */
+void basic_optimized(unsigned n);
+
 #endif // BASIC_H

@@ -72,9 +72,9 @@ void arg_handler(int argc, char *argv[]) {
 
 
     // allocating space for matrices
-    g.mtx_A = malloc(size * size * sizeof(float));
-    g.mtx_B = malloc(size * size * sizeof(float));
-    g.mtx_C = malloc(size * size * sizeof(float));
+    g.mtx_A = calloc(size * size, sizeof(float));
+    g.mtx_B = calloc(size * size, sizeof(float));
+    g.mtx_C = calloc(size * size, sizeof(float));
     if(g.mtx_C == NULL || g.mtx_C == NULL || g.mtx_C == NULL) {
         error_exit(UNEXPECTED_ERROR, "Memory allocation failed!");
     }
@@ -93,7 +93,7 @@ void arg_handler(int argc, char *argv[]) {
     for(int idx = 0; idx < ALGORITHM_COUNT; idx++) {
         if(algorithms[idx]) {
             switch (idx) {
-                case 0: basic(size); break;
+                case 0: basic(size); basic_optimized(size); break;
                 case 1: strassen(); break;
                 // TODO
             }
