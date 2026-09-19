@@ -16,13 +16,15 @@
 #include <stdlib.h>
 #include <time.h>
 
+#include "main.h"
+
 
 /**
  * @brief
  * 
- * @param
+ * @param n
  * 
  */
-void strassen();
+void strassen(unsigned n);
 
 #endif // STRASSEN_H

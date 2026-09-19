@@ -9,12 +9,15 @@ SRC = $(wildcard src/*.c)
 OBJ = $(SRC:.c=.o)
 
 
-.PHONY: main test clean
+.PHONY: main debug test clean
 
 main: $(NAME)
 
 $(NAME): $(OBJ)
 	$(CC) $(CFLAGS) $^ -o $@
+
+debug: clean
+	$(CC) $(CFLAGS) -DDEBUG $(SRC) -o $(NAME)
 
 test: main
 

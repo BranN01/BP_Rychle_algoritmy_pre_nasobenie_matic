@@ -30,6 +30,7 @@ void basic(unsigned n) {
     double sec = (end.tv_sec - start.tv_sec) + (end.tv_nsec - start.tv_nsec) / 1000000000.0;
 
     printf("Time to compute: \t %fs\n\n", sec);
+    debug_print(g.mtx_C, n);
     fprintf(stderr, "========================================================================\n");
 
     // clearing C matrix
@@ -57,6 +58,7 @@ void basic_optimized(unsigned n) {
     double sec = (end.tv_sec - start.tv_sec) + (end.tv_nsec - start.tv_nsec) / 1000000000.0;
 
     printf("Time to compute: \t %fs\n\n", sec);
+    debug_print(g.mtx_C, n);
     fprintf(stderr, "========================================================================\n");
 
     // clearing C matrix

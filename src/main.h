@@ -12,6 +12,24 @@
 
 #define ALGORITHM_COUNT 2
 
+#ifdef DEBUG
+    #define debug_print(matrix, n)                          \
+        do{                                                 \
+            printf("----------< DEBUG >----------\n");      \
+            printf("%s:\n", #matrix);                       \
+            for(unsigned idx = 0; idx < n; idx++) {         \
+                for(unsigned jdx = 0; jdx < n; jdx++) {     \
+                    printf("%f, ", matrix[idx * n + jdx]);  \
+                }                                           \
+                printf("\n");                               \
+            }                                               \
+            printf("----------< DEBUG >----------\n");      \
+            printf("\n\n");                                 \
+        }while(0)
+#else
+    #define debug_print(matrix, n)
+#endif
+
 #include <stdio.h>
 #include <stdlib.h>
 #include <signal.h>

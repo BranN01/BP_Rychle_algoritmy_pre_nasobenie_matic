@@ -19,7 +19,7 @@ global g = {
 
 void arg_handler(int argc, char *argv[]) {
     
-    int size = 0;
+    int temp = 0;
     bool algorithms[ALGORITHM_COUNT] = {false};
 
     // checking arguments validity
@@ -47,17 +47,18 @@ void arg_handler(int argc, char *argv[]) {
             algorithms[1] = true;
         }
         else {
-            size = atoi(str);
-            if(size == 0) {
+            temp = atoi(str);
+            if(temp == 0) {
                 error_exit(ARG_ERROR, "Invalid argument!");
             }
         }
     }
 
     // check for size validity
-    if(size < 2 || ((size & (size - 1)) != 0)) {
+    if(temp < 2 || ((temp & (temp - 1)) != 0)) {
         error_exit(ARG_ERROR, "Invalid matrix size! (Must be power of 2 and minimum 2)");
     }
+    unsigned size = (unsigned)temp;
 
     // ensure at least one algorithm is selected
     for(int idx = 0; idx <= ALGORITHM_COUNT; idx++) {
@@ -85,6 +86,8 @@ void arg_handler(int argc, char *argv[]) {
         g.mtx_A[idx] = (rand() % 100001) / 1000.0f;
         g.mtx_B[idx] = (rand() % 100001) / 1000.0f;
     }
+    debug_print(g.mtx_A, size);
+    debug_print(g.mtx_B, size);
 
     
     // running selected algorithms
@@ -94,7 +97,7 @@ void arg_handler(int argc, char *argv[]) {
         if(algorithms[idx]) {
             switch (idx) {
                 case 0: basic(size); basic_optimized(size); break;
-                case 1: strassen(); break;
+                case 1: strassen(size); break;
                 // TODO
             }
         }
