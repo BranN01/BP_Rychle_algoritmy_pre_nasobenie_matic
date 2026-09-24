@@ -40,16 +40,22 @@ void arg_handler(int argc, char *argv[]) {
                 algorithms[jdx] = true;
             }
         }
-        else if(strcmp(str, "-b") == 0) {
+        else if(strcmp(str, "-n") == 0) {
             algorithms[0] = true;
         }
-        else if(strcmp(str, "-s") == 0) {
+        else if(strcmp(str, "-o") == 0) {
             algorithms[1] = true;
+        }
+        else if(strcmp(str, "-b") == 0) {
+            algorithms[2] = true;
+        }
+        else if(strcmp(str, "-s") == 0) {
+            algorithms[3] = true;
         }
         else {
             temp = atoi(str);
             if(temp == 0) {
-                error_exit(ARG_ERROR, "Invalid argument!");
+                error_exit(ARG_ERROR, "Invalid argument! Use --help / -h");
             }
         }
     }
@@ -64,7 +70,7 @@ void arg_handler(int argc, char *argv[]) {
     for(int idx = 0; idx <= ALGORITHM_COUNT; idx++) {
 
         if(idx == ALGORITHM_COUNT) {
-            error_exit(ARG_ERROR, "At least one algorithm must be selected!");
+            error_exit(ARG_ERROR, "At least one algorithm must be selected! Use --help / -h");
         }
         if(algorithms[idx]) {
             break;
@@ -73,9 +79,9 @@ void arg_handler(int argc, char *argv[]) {
 
 
     // allocating space for matrices
-    g.mtx_A = calloc(size * size, sizeof(float));
-    g.mtx_B = calloc(size * size, sizeof(float));
-    g.mtx_C = calloc(size * size, sizeof(float));
+    g.mtx_A = calloc(size * size, sizeof(mtx_t));
+    g.mtx_B = calloc(size * size, sizeof(mtx_t));
+    g.mtx_C = calloc(size * size, sizeof(mtx_t));
     if(g.mtx_C == NULL || g.mtx_C == NULL || g.mtx_C == NULL) {
         error_exit(UNEXPECTED_ERROR, "Memory allocation failed!");
     }
@@ -83,8 +89,13 @@ void arg_handler(int argc, char *argv[]) {
     // filling matrices A and B with random numbers
     fprintf(stderr, "[INFO] Filling matrices with random data...\n");
     for(unsigned idx = 0; idx < size * size; idx++) {
-        g.mtx_A[idx] = (rand() % 100001) / 1000.0f;
-        g.mtx_B[idx] = (rand() % 100001) / 1000.0f;
+        #ifdef TYPE_INT
+            g.mtx_A[idx] = rand() % 100;
+            g.mtx_B[idx] = rand() % 100;
+        #else
+            g.mtx_A[idx] = (rand() % 100001) / 1000.0;
+            g.mtx_B[idx] = (rand() % 100001) / 1000.0;
+        #endif
     }
     debug_print(g.mtx_A, size);
     debug_print(g.mtx_B, size);
@@ -96,8 +107,10 @@ void arg_handler(int argc, char *argv[]) {
     for(int idx = 0; idx < ALGORITHM_COUNT; idx++) {
         if(algorithms[idx]) {
             switch (idx) {
-                case 0: basic(size); basic_optimized(size); break;
-                case 1: strassen(size); break;
+                case 0: naive(size); break;
+                case 1: naive_optimized(size); break;
+                case 2: break; // TODO
+                case 3: strassen(size); break;
                 // TODO
             }
         }
@@ -122,7 +135,9 @@ void print_help() {
     printf("OPTIONS:\n");
     printf("-h / --help \t\t Writes usage instructions\n");
     printf("-a \t\t\t Executes all algorithms\n");
-    printf("-b \t\t\t Executes the basic algorithm\n"); // [TODO] add later
+    printf("-n \t\t\t Executes the naive algorithm\n"); // [TODO] add later
+    printf("-o \t\t\t Executes the optimized naive algorithm\n");
+    printf("-b \t\t\t Executes the X algorithm\n"); // TODO
     printf("-s \t\t\t Executes the Strassen algorithm\n");
     printf("SIZE \t\t\t Size of the square matrix\n\n\n");
     printf("EXAMPLES:\n");

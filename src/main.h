@@ -10,7 +10,16 @@
 #ifndef MAIN_H
 #define MAIN_H
 
-#define ALGORITHM_COUNT 2
+#ifdef TYPE_INT
+    typedef int mtx_t;
+    #define FORMAT "%d, "
+#elif defined TYPE_FLOAT
+    typedef float mtx_t;
+    #define FORMAT "%f, "
+#else
+    typedef double mtx_t;
+    #define FORMAT "%f, "
+#endif
 
 #ifdef DEBUG
     #define debug_print(matrix, n)                          \
@@ -19,7 +28,7 @@
             printf("%s:\n", #matrix);                       \
             for(unsigned idx = 0; idx < n; idx++) {         \
                 for(unsigned jdx = 0; jdx < n; jdx++) {     \
-                    printf("%f, ", matrix[idx * n + jdx]);  \
+                    printf(FORMAT, matrix[idx * n + jdx]);  \
                 }                                           \
                 printf("\n");                               \
             }                                               \
@@ -30,6 +39,8 @@
     #define debug_print(matrix, n)
 #endif
 
+#define ALGORITHM_COUNT 4
+
 #include <stdio.h>
 #include <stdlib.h>
 #include <signal.h>
@@ -39,13 +50,13 @@
 #include <stdbool.h>
 
 #include "error.h"
-#include "basic.h"
+#include "naive.h"
 #include "strassen.h"
 
 typedef struct global_struct {
-    float *mtx_A;
-    float *mtx_B;
-    float *mtx_C;
+    mtx_t *mtx_A;
+    mtx_t *mtx_B;
+    mtx_t *mtx_C;
 } global;
 
 extern global g;

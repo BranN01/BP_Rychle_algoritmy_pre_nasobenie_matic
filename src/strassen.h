@@ -11,7 +11,7 @@
 #define STRASSEN_H
 
 #define _POSIX_C_SOURCE 199309L
-#define BASIC_START 16
+#define NAIVE_START 16
 
 #include <stdio.h>
 #include <stdlib.h>
@@ -40,8 +40,8 @@ void strassen(unsigned n);
  * @param n
  * 
  */
-void compute_strassen(float *A, unsigned stride_A, float *B, unsigned stride_B,
-                      float *C, unsigned stride_C, unsigned n);
+void compute_strassen(mtx_t *A, unsigned stride_A, mtx_t *B, unsigned stride_B,
+                      mtx_t *C, unsigned stride_C, unsigned n);
 
 /**
  * @brief
@@ -55,8 +55,8 @@ void compute_strassen(float *A, unsigned stride_A, float *B, unsigned stride_B,
  * @param n
  * 
  */                     
-void add(float *X, unsigned stride_X, float *Y, unsigned stride_Y,
-         float *Z, unsigned stride_Z, unsigned n);
+void add(mtx_t *X, unsigned stride_X, mtx_t *Y, unsigned stride_Y,
+         mtx_t *Z, unsigned stride_Z, unsigned n);
 
 /**
  * @brief
@@ -70,7 +70,7 @@ void add(float *X, unsigned stride_X, float *Y, unsigned stride_Y,
  * @param n
  * 
  */                     
-void sub(float *X, unsigned stride_X, float *Y, unsigned stride_Y,
-         float *Z, unsigned stride_Z, unsigned n);
+void sub(mtx_t *X, unsigned stride_X, mtx_t *Y, unsigned stride_Y,
+         mtx_t *Z, unsigned stride_Z, unsigned n);
 
 #endif // STRASSEN_H

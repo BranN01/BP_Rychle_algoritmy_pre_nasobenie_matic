@@ -1,18 +1,18 @@
 /** 
  * BT - Fast algorithms for matrix multiplication
  * 
- * @file basic.h
- * @details implementation of basic algorithm for matrix multiplication
+ * @file naive.h
+ * @details implementation of naive algorithm for matrix multiplication
  * 
  * @author xpetkob00 Branislav Peťko
 */
 
-#include "basic.h"
+#include "naive.h"
 
 
-void basic(unsigned n) {
+void naive(unsigned n) {
 
-    printf("Algorithm: \t\t Basic\n");
+    printf("Algorithm: \t\t Naive\n");
 
     struct timespec start, end;
     clock_gettime(CLOCK_MONOTONIC, &start);
@@ -34,20 +34,20 @@ void basic(unsigned n) {
     fprintf(stderr, "========================================================================\n");
 
     // clearing C matrix
-    memset(g.mtx_C, 0, n * n * sizeof(float));
+    memset(g.mtx_C, 0, n * n * sizeof(mtx_t));
 }
 
 
-void basic_optimized(unsigned n) {
+void naive_optimized(unsigned n) {
 
-    printf("Algorithm: \t\t Optimized Basic\n");
+    printf("Algorithm: \t\t Optimized Naive\n");
 
     struct timespec start, end;
     clock_gettime(CLOCK_MONOTONIC, &start);
 
     for(unsigned idx = 0; idx < n; idx++) {
         for(unsigned kdx = 0; kdx < n; kdx++) {
-            float reg = g.mtx_A[idx * n + kdx];
+            mtx_t reg = g.mtx_A[idx * n + kdx];
             for(unsigned jdx = 0; jdx < n; jdx++) {
                 g.mtx_C[idx * n + jdx] += reg * g.mtx_B[kdx * n + jdx];
             }
@@ -62,5 +62,5 @@ void basic_optimized(unsigned n) {
     fprintf(stderr, "========================================================================\n");
 
     // clearing C matrix
-    memset(g.mtx_C, 0, n * n * sizeof(float));
+    memset(g.mtx_C, 0, n * n * sizeof(mtx_t));
 }
