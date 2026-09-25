@@ -17,6 +17,7 @@ void strassen(unsigned n) {
     struct timespec start, end;
     clock_gettime(CLOCK_MONOTONIC, &start);
 
+    // main algorithm to compute the multiplication
     //compute_strassen(g.mtx_A, g.mtx_B, n);
 
     clock_gettime(CLOCK_MONOTONIC, &end);
@@ -34,7 +35,7 @@ void strassen(unsigned n) {
                       mtx_t *C, unsigned stride_C, unsigned n) {
 
     // 
-    if(n <= BNAIVE_START) {
+    if(n <= NAIVE_START) {
         for(unsigned idx = 0; idx < n; idx++) {
             for(unsigned kdx = 0; kdx < n; kdx++) {
                 mtx_t reg = A[idx * stride_A + kdx];

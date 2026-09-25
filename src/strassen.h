@@ -21,15 +21,16 @@
 
 
 /**
- * @brief
+ * @brief function to run Strassen algorithm for matrix multiplication
  * 
- * @param n
+ * @param n matrix size (n x n)
  * 
  */
 void strassen(unsigned n);
 
+
 /**
- * @brief
+ * @brief main Strassen algorithm implementation
  * 
  * @param A
  * @param stride_A
@@ -42,6 +43,7 @@ void strassen(unsigned n);
  */
 void compute_strassen(mtx_t *A, unsigned stride_A, mtx_t *B, unsigned stride_B,
                       mtx_t *C, unsigned stride_C, unsigned n);
+
 
 /**
  * @brief
@@ -57,6 +59,7 @@ void compute_strassen(mtx_t *A, unsigned stride_A, mtx_t *B, unsigned stride_B,
  */                     
 void add(mtx_t *X, unsigned stride_X, mtx_t *Y, unsigned stride_Y,
          mtx_t *Z, unsigned stride_Z, unsigned n);
+
 
 /**
  * @brief

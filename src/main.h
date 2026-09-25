@@ -12,12 +12,15 @@
 
 #ifdef TYPE_INT
     typedef int mtx_t;
+    #define INFO "INT"
     #define FORMAT "%d, "
 #elif defined TYPE_FLOAT
     typedef float mtx_t;
+    #define INFO "FLOAT"
     #define FORMAT "%f, "
 #else
     typedef double mtx_t;
+    #define INFO "DOUBLE"
     #define FORMAT "%f, "
 #endif
 
@@ -51,6 +54,7 @@
 
 #include "error.h"
 #include "naive.h"
+#include "divide_conquer.h"
 #include "strassen.h"
 
 typedef struct global_struct {
@@ -71,10 +75,12 @@ extern global g;
  */
 void arg_handler(int argc, char *argv[]);
 
+
 /**
  * @brief prints help message
  */
 void print_help();
+
 
 /**
  * @brief handles SIGINT and SIGTERM signals - cleanup of all resources
@@ -83,6 +89,7 @@ void print_help();
  * 
  */
 void handle_signal(int sig);
+
 
 /**
  * @brief main starting point for program
@@ -93,6 +100,5 @@ void handle_signal(int sig);
  * @return 0 if successful
  */
 int main(int argc, char *argv[]);
-
 
 #endif // MAIN_H

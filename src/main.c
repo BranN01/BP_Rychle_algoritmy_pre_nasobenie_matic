@@ -31,11 +31,13 @@ void arg_handler(int argc, char *argv[]) {
             str[jdx] = tolower(str[jdx]);
         }
 
+        // checking for valid arguments
         if(strcmp(str, "-h") == 0 || strcmp(str, "--help") == 0) {
             print_help();
             return;
         }
         else if(strcmp(str, "-a") == 0) {
+            // setting all algorithms to run
             for(int jdx = 0; jdx < ALGORITHM_COUNT; jdx++) {
                 algorithms[jdx] = true;
             }
@@ -46,13 +48,13 @@ void arg_handler(int argc, char *argv[]) {
         else if(strcmp(str, "-o") == 0) {
             algorithms[1] = true;
         }
-        else if(strcmp(str, "-b") == 0) {
+        else if(strcmp(str, "-d") == 0) {
             algorithms[2] = true;
         }
         else if(strcmp(str, "-s") == 0) {
             algorithms[3] = true;
         }
-        else {
+        else { // invalid argument
             temp = atoi(str);
             if(temp == 0) {
                 error_exit(ARG_ERROR, "Invalid argument! Use --help / -h");
@@ -87,8 +89,10 @@ void arg_handler(int argc, char *argv[]) {
     }
 
     // filling matrices A and B with random numbers
-    fprintf(stderr, "[INFO] Filling matrices with random data...\n");
+    fprintf(stderr, "\n[INFO] \t Matrix %dx%d (%s)\n", size, size, INFO);
+    fprintf(stderr, "[INFO] \t Filling matrices with random data...\n");
     for(unsigned idx = 0; idx < size * size; idx++) {
+        // generating numbers based on type
         #ifdef TYPE_INT
             g.mtx_A[idx] = rand() % 100;
             g.mtx_B[idx] = rand() % 100;
@@ -102,14 +106,14 @@ void arg_handler(int argc, char *argv[]) {
 
     
     // running selected algorithms
-    fprintf(stderr, "[INFO] Running selected algorithms...\n\n\n");
+    fprintf(stderr, "[INFO] \t Running selected algorithms...\n\n\n");
     fprintf(stderr, "========================================================================\n");
     for(int idx = 0; idx < ALGORITHM_COUNT; idx++) {
         if(algorithms[idx]) {
             switch (idx) {
                 case 0: naive(size); break;
                 case 1: naive_optimized(size); break;
-                case 2: break; // TODO
+                case 2: divide_conquer(size); break;
                 case 3: strassen(size); break;
                 // TODO
             }
@@ -117,6 +121,7 @@ void arg_handler(int argc, char *argv[]) {
     }
     
 
+    // cleaning
     free(g.mtx_A);
     g.mtx_A = NULL;
     free(g.mtx_B);
@@ -131,24 +136,24 @@ void print_help() {
     printf("Executes selected matrix multiplication algorithms on randomly generated\n");
     printf("matrices of the specified size and prints the execution time for each.\n\n");
     printf("\nUSAGE:\n");
-    printf("./mtx-multiplication [ALGORITHMS] SIZE\n\n\n");
+    printf("./[i/f/d]mtx-multiplication [ALGORITHMS] SIZE\n\n\n");
     printf("OPTIONS:\n");
     printf("-h / --help \t\t Writes usage instructions\n");
     printf("-a \t\t\t Executes all algorithms\n");
-    printf("-n \t\t\t Executes the naive algorithm\n"); // [TODO] add later
+    printf("-n \t\t\t Executes the naive algorithm\n");
     printf("-o \t\t\t Executes the optimized naive algorithm\n");
-    printf("-b \t\t\t Executes the X algorithm\n"); // TODO
-    printf("-s \t\t\t Executes the Strassen algorithm\n");
+    printf("-d \t\t\t Executes the divide and conquer algorithm\n");
+    printf("-s \t\t\t Executes the Strassen algorithm\n");  // TODO other
     printf("SIZE \t\t\t Size of the square matrix\n\n\n");
     printf("EXAMPLES:\n");
-    printf("./mtx-multiplication --help\n");
-    printf("./mtx-multiplication -a 64\n");
-    printf("./mtx-multiplication -b ... 128\n\n"); // [TODO] later
+    printf("./fmtx-multiplication --help\n");
+    printf("./dmtx-multiplication -a 64\n");
+    printf("./imtx-multiplication -n -o -s 128\n\n"); // [TODO] later
     printf("\nNOTES:\n");
     printf("- At least one algorithm must be specified!\n");
-    printf("- SIZE must be power of 2 and minimum 2\n");
+    printf("- SIZE must be power of 2 and minimum 2.\n");
+    printf("- Types: [i/f/d]mtx-multiplication (int, float and double).\n");
 }
-
 
 void handle_signal(int sig) {
     (void)sig; // unused parameter which is required by signal function
@@ -166,7 +171,6 @@ void handle_signal(int sig) {
     warning("Program has been terminated by SIGTERM or SIGINT! Everything has been cleaned up!");
     error_exit(SIG_ERROR, "Exiting...");
 }
-
 
 int main(int argc, char *argv[]) {
 

@@ -17,6 +17,7 @@ void naive(unsigned n) {
     struct timespec start, end;
     clock_gettime(CLOCK_MONOTONIC, &start);
 
+    // naive algorithm
     for(unsigned idx = 0; idx < n; idx++) {
         for(unsigned jdx = 0; jdx < n; jdx++) {
             g.mtx_C[idx * n + jdx] = 0;
@@ -37,7 +38,6 @@ void naive(unsigned n) {
     memset(g.mtx_C, 0, n * n * sizeof(mtx_t));
 }
 
-
 void naive_optimized(unsigned n) {
 
     printf("Algorithm: \t\t Optimized Naive\n");
@@ -45,6 +45,7 @@ void naive_optimized(unsigned n) {
     struct timespec start, end;
     clock_gettime(CLOCK_MONOTONIC, &start);
 
+    // optimized naive algorithm
     for(unsigned idx = 0; idx < n; idx++) {
         for(unsigned kdx = 0; kdx < n; kdx++) {
             mtx_t reg = g.mtx_A[idx * n + kdx];
