@@ -89,7 +89,7 @@ void arg_handler(int argc, char *argv[]) {
     }
 
     // filling matrices A and B with random numbers
-    fprintf(stderr, "\n[INFO] \t Matrix %dx%d (%s)\n", size, size, INFO);
+    fprintf(stdout, "\n[INFO] \t Matrix %dx%d (%s)\n", size, size, INFO);
     fprintf(stderr, "[INFO] \t Filling matrices with random data...\n");
     for(unsigned idx = 0; idx < size * size; idx++) {
         // generating numbers based on type

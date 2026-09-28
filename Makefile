@@ -37,6 +37,14 @@ debug: clean main
 
 
 test: main
+	@n=2; \
+	for idx in $$(seq 1 12); do \
+		for jdx in $$(seq 1 10); do \
+			./dmtx-multiplication -n -o -d $$n >> out.txt; \
+		done; \
+		n=$$((n * 2)); \
+	done
+	$(MAKE) clean
 
 
 clean:
