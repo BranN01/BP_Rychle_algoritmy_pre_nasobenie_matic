@@ -26,7 +26,7 @@
  * @param n matrix size (n x n)
  * 
  */
-void strassen(unsigned n);
+void strassen(size_t n);
 
 
 /**
@@ -41,8 +41,8 @@ void strassen(unsigned n);
  * @param n
  * 
  */
-void compute_strassen(mtx_t *A, unsigned stride_A, mtx_t *B, unsigned stride_B,
-                      mtx_t *C, unsigned stride_C, unsigned n);
+void compute_strassen(mtx_t *A, unsigned stride_A, mtx_t *B, size_t stride_B,
+                      mtx_t *C, unsigned stride_C, size_t n);
 
 
 /**
@@ -57,8 +57,8 @@ void compute_strassen(mtx_t *A, unsigned stride_A, mtx_t *B, unsigned stride_B,
  * @param n
  * 
  */                     
-void add(mtx_t *X, unsigned stride_X, mtx_t *Y, unsigned stride_Y,
-         mtx_t *Z, unsigned stride_Z, unsigned n);
+void add(mtx_t *X, size_t stride_X, mtx_t *Y, size_t stride_Y,
+         mtx_t *Z, size_t stride_Z, size_t n);
 
 
 /**
@@ -73,7 +73,7 @@ void add(mtx_t *X, unsigned stride_X, mtx_t *Y, unsigned stride_Y,
  * @param n
  * 
  */                     
-void sub(mtx_t *X, unsigned stride_X, mtx_t *Y, unsigned stride_Y,
-         mtx_t *Z, unsigned stride_Z, unsigned n);
+void sub(mtx_t *X, size_t stride_X, mtx_t *Y, size_t stride_Y,
+         mtx_t *Z, size_t stride_Z, size_t n);
 
 #endif // STRASSEN_H

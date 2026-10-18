@@ -21,7 +21,7 @@
  * @param n matrix size (n x n)
  * 
  */
-void divide_conquer(unsigned n);
+void divide_conquer(size_t n);
 
 
 /**
@@ -34,6 +34,6 @@ void divide_conquer(unsigned n);
  * @param n current submatrix size (n x n)
  * 
  */
-void compute_divide_conquer(mtx_t *A, mtx_t *B, mtx_t *C, unsigned stride, unsigned n);
+void compute_divide_conquer(mtx_t *A, mtx_t *B, mtx_t *C, size_t stride, size_t n);
 
 #endif // DIVIDE_CONQUER_H

@@ -10,9 +10,9 @@
 #include "divide_conquer.h"
 
 
-void divide_conquer(unsigned n) {
+void divide_conquer(size_t n) {
 
-    printf("Algorithm: \t\t Divide and conquer\n");
+    printf("Algorithm: \t Divide and conquer\n");
 
     struct timespec start, end;
     clock_gettime(CLOCK_MONOTONIC, &start);
@@ -23,7 +23,8 @@ void divide_conquer(unsigned n) {
     clock_gettime(CLOCK_MONOTONIC, &end);
     double sec = (end.tv_sec - start.tv_sec) + (end.tv_nsec - start.tv_nsec) / 1000000000.0;
 
-    printf("Time to compute: \t %fs\n\n", sec);
+    printf("Total time: \t %fs  |  microsecs/element: %f  |  microsecs/mul: %f\n\n",
+           sec, sec * 1000000.0 / ((double)n * n), sec * 1000000.0 / ((double)n * n * n));
     debug_print(g.mtx_C, n);
     fprintf(stderr, "========================================================================\n");
 
@@ -31,7 +32,7 @@ void divide_conquer(unsigned n) {
     memset(g.mtx_C, 0, n * n * sizeof(mtx_t));
 }
 
-void compute_divide_conquer(mtx_t *A, mtx_t *B, mtx_t *C, unsigned stride, unsigned n) {
+void compute_divide_conquer(mtx_t *A, mtx_t *B, mtx_t *C, size_t stride, size_t n) {
 
     // threshold to stop recursion
     if(n == 1) {
@@ -40,7 +41,7 @@ void compute_divide_conquer(mtx_t *A, mtx_t *B, mtx_t *C, unsigned stride, unsig
     }
 
     // dividing matrix by 2
-    unsigned half = n / 2;
+    size_t half = n / 2;
 
     // setting pointers to the matrix parts after divide
     mtx_t *A11 = A, *A12 = A + half, *A21 = A + half * stride, *A22 = A + half * stride + half;

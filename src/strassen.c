@@ -10,9 +10,9 @@
 #include "strassen.h"
 
 
-void strassen(unsigned n) {
+void strassen(size_t n) {
 
-    printf("Algorithm: \t\t Strassen\n");
+    printf("Algorithm: \t Strassen\n");
 
     struct timespec start, end;
     clock_gettime(CLOCK_MONOTONIC, &start);
@@ -23,7 +23,8 @@ void strassen(unsigned n) {
     clock_gettime(CLOCK_MONOTONIC, &end);
     double sec = (end.tv_sec - start.tv_sec) + (end.tv_nsec - start.tv_nsec) / 1000000000.0;
 
-    printf("Time to compute: \t %fs\n\n", sec);
+    printf("Total time: \t %fs  |  microsecs/element: %f  |  microsecs/mul: %f\n\n",
+           sec, sec * 1000000.0 / ((double)n * n), sec * 1000000.0 / ((double)n * n * n));
     debug_print(g.mtx_C, n);
     fprintf(stderr, "========================================================================\n");
 
@@ -31,15 +32,15 @@ void strassen(unsigned n) {
     memset(g.mtx_C, 0, n * n * sizeof(mtx_t));
 }
 
-/*void compute_strassen(mtx_t *A, unsigned stride_A, mtx_t *B, unsigned stride_B,
-                      mtx_t *C, unsigned stride_C, unsigned n) {
+/*void compute_strassen(mtx_t *A, size_t stride_A, mtx_t *B, size_t stride_B,
+                        mtx_t *C, size_t stride_C, size_t n) {
 
     // 
     if(n <= NAIVE_START) {
-        for(unsigned idx = 0; idx < n; idx++) {
-            for(unsigned kdx = 0; kdx < n; kdx++) {
+        for(size_t idx = 0; idx < n; idx++) {
+            for(size_t kdx = 0; kdx < n; kdx++) {
                 mtx_t reg = A[idx * stride_A + kdx];
-                for(unsigned jdx = 0; jdx < n; jdx++) {
+                for(size_t jdx = 0; jdx < n; jdx++) {
                     C[idx * stride_C + jdx] += reg * B[kdx * stride_B + jdx];
                 }
             }
@@ -48,7 +49,7 @@ void strassen(unsigned n) {
     }
 
 
-    unsigned half = n / 2;
+    size_t half = n / 2;
 
     mtx_t *A11 = A, *A12 = A + half, *A21 = A + half * stride_A, *A22 = A + half * stride_A + half;
     mtx_t *B11 = B, *B12 = B + half, *B21 = B + half * stride_B, *B22 = B + half * stride_B + half;
@@ -60,9 +61,9 @@ void strassen(unsigned n) {
     
     mtx_t *C11 = C, *C12 = C + half, *C21 = C + half * stride_C, *C22 = C + half * stride_C + half;
 
-    for(unsigned idx = 0; idx < half; idx++) {
-        for(unsigned jdx = 0; jdx < half; jdx++) {
-            unsigned pos = idx * half + jdx;
+    for(size_t idx = 0; idx < half; idx++) {
+        for(size_t jdx = 0; jdx < half; jdx++) {
+            size_t pos = idx * half + jdx;
 
             C11[idx * stride_C + jdx] += I[pos] + IV[pos] - V[pos] + VII[pos];
             C12[idx * stride_C + jdx] += III[pos] + V[pos];
@@ -72,21 +73,21 @@ void strassen(unsigned n) {
     }
 }
 
-void add(mtx_t *X, unsigned stride_X, mtx_t *Y, unsigned stride_Y,
-         mtx_t *Z, unsigned stride_Z, unsigned n) {
+void add(mtx_t *X, size_t stride_X, mtx_t *Y, size_t stride_Y,
+         mtx_t *Z, size_t stride_Z, size_t n) {
     
-    for(unsigned idx = 0; idx < n; idx++) {
-        for(unsigned jdx = 0; jdx < n; jdx++) {
+    for(size_t idx = 0; idx < n; idx++) {
+        for(size_t jdx = 0; jdx < n; jdx++) {
             Z[idx * stride_Z + jdx] = X[idx * stride_X + jdx] + Y[idx * stride_Y + jdx];
         }
     }
 }
 
-void sub(mtx_t *X, unsigned stride_X, mtx_t *Y, unsigned stride_Y,
-         mtx_t *Z, unsigned stride_Z, unsigned n) {
+void sub(mtx_t *X, size_t stride_X, mtx_t *Y, size_t stride_Y,
+         mtx_t *Z, size_t stride_Z, size_t n) {
     
-    for(unsigned idx = 0; idx < n; idx++) {
-        for(unsigned jdx = 0; jdx < n; jdx++) {
+    for(size_t idx = 0; idx < n; idx++) {
+        for(size_t jdx = 0; jdx < n; jdx++) {
             Z[idx * stride_Z + jdx] = X[idx * stride_X + jdx] - Y[idx * stride_Y + jdx];
         }
     }

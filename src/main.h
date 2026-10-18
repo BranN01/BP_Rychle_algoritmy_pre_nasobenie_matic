@@ -29,8 +29,8 @@
         do{                                                 \
             printf("----------< DEBUG >----------\n");      \
             printf("%s:\n", #matrix);                       \
-            for(unsigned idx = 0; idx < n; idx++) {         \
-                for(unsigned jdx = 0; jdx < n; jdx++) {     \
+            for(size_t idx = 0; idx < n; idx++) {         \
+                for(size_t jdx = 0; jdx < n; jdx++) {     \
                     printf(FORMAT, matrix[idx * n + jdx]);  \
                 }                                           \
                 printf("\n");                               \

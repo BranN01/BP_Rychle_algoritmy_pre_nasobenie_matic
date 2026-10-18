@@ -25,7 +25,7 @@
  * @param n matrix size (n x n)
  * 
  */
-void naive(unsigned n);
+void naive(size_t n);
 
 
 /**
@@ -34,6 +34,6 @@ void naive(unsigned n);
  * @param n matrix size (n x n)
  * 
  */
-void naive_optimized(unsigned n);
+void naive_optimized(size_t n);
 
 #endif // NAIVE_H
