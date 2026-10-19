@@ -1,38 +1,45 @@
 /** 
  * BT - Fast algorithms for matrix multiplication
  * 
- * @file divide_conquer.h
+ * @file divide_conquer.c
  * @details implementation of divide and conquer algorithm for matrix multiplication
  * 
  * @author xpetkob00 Branislav Peťko
 */
 
-#include "divide_conquer.h"
+#define _POSIX_C_SOURCE 199309L
+
+#include <stdio.h>
+#include <stdlib.h>
+#include <time.h>
+
+#ifndef N
+#define N 4096
+#endif
+
+#ifdef DEBUG
+    #define debug_print(matrix, n)                          \
+        do{                                                 \
+            printf("----------< DEBUG >----------\n");      \
+            printf("%s:\n", #matrix);                       \
+            for(size_t idx = 0; idx < n; idx++) {         \
+                for(size_t jdx = 0; jdx < n; jdx++) {     \
+                    printf("%f, ", matrix[idx * n + jdx]);  \
+                }                                           \
+                printf("\n");                               \
+            }                                               \
+            printf("----------< DEBUG >----------\n");      \
+            printf("\n\n");                                 \
+        }while(0)
+#else
+    #define debug_print(matrix, n)
+#endif
+
+typedef double mtx_t;
 
 
-void divide_conquer(size_t n) {
 
-    printf("Algorithm: \t Divide and conquer\n");
-
-    struct timespec start, end;
-    clock_gettime(CLOCK_MONOTONIC, &start);
-
-    // main algorithm to compute the multiplication
-    compute_divide_conquer(g.mtx_A, g.mtx_B, g.mtx_C, n, n);
-
-    clock_gettime(CLOCK_MONOTONIC, &end);
-    double sec = (end.tv_sec - start.tv_sec) + (end.tv_nsec - start.tv_nsec) / 1000000000.0;
-
-    printf("Total time: \t %fs  |  microsecs/element: %f  |  microsecs/mul: %f\n\n",
-           sec, sec * 1000000.0 / ((double)n * n), sec * 1000000.0 / ((double)n * n * n));
-    debug_print(g.mtx_C, n);
-    fprintf(stderr, "========================================================================\n");
-
-    // clearing C matrix
-    memset(g.mtx_C, 0, n * n * sizeof(mtx_t));
-}
-
-void compute_divide_conquer(mtx_t *A, mtx_t *B, mtx_t *C, size_t stride, size_t n) {
+static void divide_conquer(mtx_t *A, mtx_t *B, mtx_t *C, size_t stride, size_t n) {
 
     // threshold to stop recursion
     if(n == 1) {
@@ -49,18 +56,64 @@ void compute_divide_conquer(mtx_t *A, mtx_t *B, mtx_t *C, size_t stride, size_t 
     mtx_t *C11 = C, *C12 = C + half, *C21 = C + half * stride, *C22 = C + half * stride + half;
 
     // C11 = A11 * B11 + A12 * B21
-    compute_divide_conquer(A11, B11, C11, stride, half);
-    compute_divide_conquer(A12, B21, C11, stride, half);
+    divide_conquer(A11, B11, C11, stride, half);
+    divide_conquer(A12, B21, C11, stride, half);
 
     // C12 = A11 * B12 + A12 * B22
-    compute_divide_conquer(A11, B12, C12, stride, half);
-    compute_divide_conquer(A12, B22, C12, stride, half);
+    divide_conquer(A11, B12, C12, stride, half);
+    divide_conquer(A12, B22, C12, stride, half);
 
     // C21 = A21 * B11 + A22 * B21
-    compute_divide_conquer(A21, B11, C21, stride, half);
-    compute_divide_conquer(A22, B21, C21, stride, half);
+    divide_conquer(A21, B11, C21, stride, half);
+    divide_conquer(A22, B21, C21, stride, half);
 
     // C22 = A21 * B12 + A22 * B22
-    compute_divide_conquer(A21, B12, C22, stride, half);
-    compute_divide_conquer(A22, B22, C22, stride, half);
+    divide_conquer(A21, B12, C22, stride, half);
+    divide_conquer(A22, B22, C22, stride, half);
+}
+
+
+int main() {
+
+    fprintf(stdout, "\n[INFO] \t Matrix %ldx%ld -> Divide and conquer\n", (size_t)N, (size_t)N);
+
+    // allocating space for matrices
+    mtx_t *A = calloc((size_t)N * N, sizeof(mtx_t));
+    mtx_t *B = calloc((size_t)N * N, sizeof(mtx_t));
+    mtx_t *C = calloc((size_t)N * N, sizeof(mtx_t));
+    if(A == NULL || B == NULL || C == NULL) {
+        fprintf(stderr, "Memory allocation failed!");
+        return 1;
+    }
+
+    srand(42);
+    // filling matrices with random numbers
+    for(size_t idx = 0; idx < N * N; idx++) {
+        A[idx] = rand() / (mtx_t)RAND_MAX - 0.5;
+        B[idx] = rand() / (mtx_t)RAND_MAX - 0.5;
+    }
+    debug_print(A, N);
+    debug_print(B, N);
+
+
+    struct timespec start, end;
+    clock_gettime(CLOCK_MONOTONIC, &start);
+
+    divide_conquer(A, B, C, N, N);
+
+    clock_gettime(CLOCK_MONOTONIC, &end);
+    unsigned long ns = (end.tv_sec - start.tv_sec) * 1000000000.0 + (end.tv_nsec - start.tv_nsec);
+    double sec = ns / 1000000000.0;
+    unsigned long us = (ns + 500) / 1000;   // microseconds
+
+    printf("Total time: \t %fs  |  microsecs/element: %f  |  microsecs/mul: %f\n\n",
+           sec, us / ((double)N * N), us / ((double)N * N * N));
+    debug_print(C, N);
+
+
+    free(A);
+    free(B);
+    free(C);
+
+    return 0;
 }

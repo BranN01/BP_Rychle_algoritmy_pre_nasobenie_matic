@@ -1,68 +1,97 @@
 /** 
  * BT - Fast algorithms for matrix multiplication
  * 
- * @file naive.h
+ * @file naive.c
  * @details implementation of naive algorithm for matrix multiplication
  * 
  * @author xpetkob00 Branislav Peťko
 */
 
-#include "naive.h"
+#define _POSIX_C_SOURCE 199309L
+
+#include <stdio.h>
+#include <stdlib.h>
+#include <time.h>
+
+#ifndef N
+#define N 4096
+#endif
+
+#ifdef DEBUG
+    #define debug_print(matrix, n)                          \
+        do{                                                 \
+            printf("----------< DEBUG >----------\n");      \
+            printf("%s:\n", #matrix);                       \
+            for(size_t idx = 0; idx < n; idx++) {         \
+                for(size_t jdx = 0; jdx < n; jdx++) {     \
+                    printf("%f, ", matrix[idx * n + jdx]);  \
+                }                                           \
+                printf("\n");                               \
+            }                                               \
+            printf("----------< DEBUG >----------\n");      \
+            printf("\n\n");                                 \
+        }while(0)
+#else
+    #define debug_print(matrix, n)
+#endif
+
+typedef double mtx_t;
 
 
-void naive(size_t n) {
 
-    printf("Algorithm: \t Naive\n");
+static void naive(mtx_t *A, mtx_t *B, mtx_t *C) {
 
-    struct timespec start, end;
-    clock_gettime(CLOCK_MONOTONIC, &start);
-
-    // naive algorithm
-    for(size_t idx = 0; idx < n; idx++) {
-        for(size_t jdx = 0; jdx < n; jdx++) {
-            for(size_t kdx = 0; kdx < n; kdx++) {
-                g.mtx_C[idx * n + jdx] += g.mtx_A[idx * n + kdx] * g.mtx_B[kdx * n + jdx];
+    for(size_t idx = 0; idx < N; idx++) {
+        for(size_t jdx = 0; jdx < N; jdx++) {
+            for(size_t kdx = 0; kdx < N; kdx++) {
+                C[idx * N + jdx] += A[idx * N + kdx] * B[kdx * N + jdx];
             }
         }
     }
-
-    clock_gettime(CLOCK_MONOTONIC, &end);
-    double sec = (end.tv_sec - start.tv_sec) + (end.tv_nsec - start.tv_nsec) / 1000000000.0;
-
-    printf("Total time: \t %fs  |  microsecs/element: %f  |  microsecs/mul: %f\n\n",
-           sec, sec * 1000000.0 / ((double)n * n), sec * 1000000.0 / ((double)n * n * n));
-    debug_print(g.mtx_C, n);
-    fprintf(stderr, "========================================================================\n");
-
-    // clearing C matrix
-    memset(g.mtx_C, 0, n * n * sizeof(mtx_t));
 }
 
-void naive_optimized(size_t n) {
 
-    printf("Algorithm: \t Optimized Naive\n");
+int main() {
+
+    fprintf(stdout, "\n[INFO] \t Matrix %ldx%ld -> Naive\n", (size_t)N, (size_t)N);
+
+    // allocating space for matrices
+    mtx_t *A = calloc((size_t)N * N, sizeof(mtx_t));
+    mtx_t *B = calloc((size_t)N * N, sizeof(mtx_t));
+    mtx_t *C = calloc((size_t)N * N, sizeof(mtx_t));
+    if(A == NULL || B == NULL || C == NULL) {
+        fprintf(stderr, "Memory allocation failed!");
+        return 1;
+    }
+
+    srand(42);
+    // filling matrices with random numbers
+    for(size_t idx = 0; idx < N * N; idx++) {
+        A[idx] = rand() / (mtx_t)RAND_MAX - 0.5;
+        B[idx] = rand() / (mtx_t)RAND_MAX - 0.5;
+    }
+    debug_print(A, N);
+    debug_print(B, N);
+
 
     struct timespec start, end;
     clock_gettime(CLOCK_MONOTONIC, &start);
 
-    // optimized naive algorithm
-    for(size_t idx = 0; idx < n; idx++) {
-        for(size_t kdx = 0; kdx < n; kdx++) {
-            mtx_t reg = g.mtx_A[idx * n + kdx];
-            for(size_t jdx = 0; jdx < n; jdx++) {
-                g.mtx_C[idx * n + jdx] += reg * g.mtx_B[kdx * n + jdx];
-            }
-        }
-    }
+    naive(A, B, C);
 
     clock_gettime(CLOCK_MONOTONIC, &end);
-    double sec = (end.tv_sec - start.tv_sec) + (end.tv_nsec - start.tv_nsec) / 1000000000.0;
+    unsigned long ns = (end.tv_sec - start.tv_sec) * 1000000000.0 + (end.tv_nsec - start.tv_nsec);
+    double sec = ns / 1000000000.0;
+    unsigned long us = (ns + 500) / 1000;   // microseconds
 
     printf("Total time: \t %fs  |  microsecs/element: %f  |  microsecs/mul: %f\n\n",
-           sec, sec * 1000000.0 / ((double)n * n), sec * 1000000.0 / ((double)n * n * n));
-    debug_print(g.mtx_C, n);
-    fprintf(stderr, "========================================================================\n");
+           sec, us / ((double)N * N), us / ((double)N * N * N));
+    debug_print(C, N);
 
-    // clearing C matrix
-    memset(g.mtx_C, 0, n * n * sizeof(mtx_t));
+
+    free(A);
+    free(B);
+    free(C);
+
+    return 0;
 }

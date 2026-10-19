@@ -3,44 +3,36 @@
 #	Author: xpetkob00 Branislav Peťko
 
 CC=gcc
-CFLAGS=-std=c17 -pedantic -Wall -Wextra -O3
+CFLAGS=-std=c17 -pedantic -Wall -Wextra -O3 -march=native
+N = 8
 
-TARGETS = imtx-multiplication fmtx-multiplication dmtx-multiplication
-SRC = $(wildcard src/*.c)
-
-OBJ_INT = $(SRC:.c=-i.o)
-OBJ_FLOAT = $(SRC:.c=-f.o)
-OBJ_DOUBLE = $(SRC:.c=-d.o)
 
 
 .PHONY: main debug test clean
 
-main: $(TARGETS)
 
-imtx-multiplication: $(OBJ_INT)
-	$(CC) $(CFLAGS) -DTYPE_INT $^ -o $@
-fmtx-multiplication: $(OBJ_FLOAT)
-	$(CC) $(CFLAGS) -DTYPE_FLOAT $^ -o $@
-dmtx-multiplication: $(OBJ_DOUBLE)
-	$(CC) $(CFLAGS) -DTYPE_DOUBLE $^ -o $@
-
-%-i.o: %.c
-	$(CC) $(CFLAGS) -DTYPE_INT -c $< -o $@
-%-f.o: %.c
-	$(CC) $(CFLAGS) -DTYPE_FLOAT -c $< -o $@
-%-d.o: %.c
-	$(CC) $(CFLAGS) -DTYPE_DOUBLE -c $< -o $@
+main: 
+	$(CC) $(CFLAGS) -DN=$(N) src/naive.c -o naive
+	$(CC) $(CFLAGS) -DN=$(N) src/naive_opt.c -o naive_opt
+	$(CC) $(CFLAGS) -DN=$(N) src/divide_conquer.c -o divide_conquer
+	$(CC) $(CFLAGS) -DN=$(N) src/strassen.c -o strassen
 
 
 debug: CFLAGS += -DDEBUG
 debug: clean main
 
 
-test: main
+test:
 	@n=2; \
 	for idx in $$(seq 1 12); do \
-		for jdx in $$(seq 1 10); do \
-			./dmtx-multiplication -n -o -d $$n >> out.txt; \
+		for algorithm in naive divide_conquer; do \
+			$(CC) $(CFLAGS) -DN=$$n src/$$algorithm.c -o $$algorithm; \
+			printf "%-16s N=%-5s  " $$algorithm $$n >&2; \
+			for jdx in $$(seq 1 10); do \
+				./$$algorithm >> out.txt; \
+				printf "▰" >&2; \
+			done; \
+			printf " ✔\n" >&2; \
 		done; \
 		n=$$((n * 2)); \
 	done
@@ -48,4 +40,4 @@ test: main
 
 
 clean:
-	rm -f src/*.o $(TARGETS)
+	rm -f naive naive_opt divide_conquer strassen
