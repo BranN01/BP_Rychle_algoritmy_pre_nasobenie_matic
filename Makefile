@@ -35,7 +35,7 @@ test:
 
 
 clean:
-	rm -f naive naive_opt divide_conquer strassen graphs.zip
+	rm -f naive block strassen graphs.zip
 
 
 gzip: clean
