@@ -12,6 +12,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <time.h>
+#include <string.h>
 
 #ifndef N
 #define N 4096
@@ -51,9 +52,22 @@ static void naive(mtx_t *A, mtx_t *B, mtx_t *C) {
 }
 
 
-int main() {
+void sort(double *array, int n) {
 
-    fprintf(stdout, "\n[INFO] \t Matrix %ldx%ld -> Naive\n", (size_t)N, (size_t)N);
+    for(int idx = 1; idx < n; idx++) {
+        double key = array[idx];
+        int jdx = idx - 1;
+
+        while(jdx >= 0 && array[jdx] > key) {
+            array[jdx + 1] = array[jdx];
+            jdx--;
+        }
+        array[jdx + 1] = key;
+    }
+}
+
+
+int main() {
 
     // allocating space for matrices
     mtx_t *A = calloc((size_t)N * N, sizeof(mtx_t));
@@ -73,20 +87,51 @@ int main() {
     debug_print(A, N);
     debug_print(B, N);
 
+    int run_count;
+    if(N >= 2 && N <= 1024) {
+        run_count = 1000;
+    }
+    else if(N == 2048) {
+        run_count = 100;
+    }
+    else{
+        run_count = 10;
+    }
+    double total_time[run_count], us_element[run_count], us_mul[run_count];
+    int step = run_count / 10;
+    fprintf(stdout, "\n[INFO] \t Matrix %ldx%ld -> Naive -> Run count: %d\n", (size_t)N, (size_t)N, run_count);
 
-    struct timespec start, end;
-    clock_gettime(CLOCK_MONOTONIC, &start);
 
-    naive(A, B, C);
+    fprintf(stderr, "Progress: ");
+    for(int idx = 0; idx < run_count; idx++) {
+        memset(C, 0, (size_t)N * N * sizeof(mtx_t));
 
-    clock_gettime(CLOCK_MONOTONIC, &end);
-    unsigned long ns = (end.tv_sec - start.tv_sec) * 1000000000.0 + (end.tv_nsec - start.tv_nsec);
-    double sec = ns / 1000000000.0;
-    unsigned long us = (ns + 500) / 1000;   // microseconds
+        struct timespec start, end;
+        clock_gettime(CLOCK_MONOTONIC, &start);
 
-    printf("Total time: \t %fs  |  microsecs/element: %f  |  microsecs/mul: %f\n\n",
-           sec, us / ((double)N * N), us / ((double)N * N * N));
+        naive(A, B, C);
+
+        clock_gettime(CLOCK_MONOTONIC, &end);
+        unsigned long ns = (end.tv_sec - start.tv_sec) * 1000000000.0 + (end.tv_nsec - start.tv_nsec);
+        double sec = ns / 1000000000.0;
+        unsigned long us = (ns + 500) / 1000;   // microseconds
+        total_time[idx] = sec;
+        us_element[idx] = us / ((double)N * N);
+        us_mul[idx] = us / ((double)N * N * N);
+
+        if((idx + 1) % step == 0) {
+            fprintf(stderr, "▰");
+        }
+    }
+    fprintf(stderr, "\n\n");
+    
     debug_print(C, N);
+    sort(total_time, run_count);
+    sort(us_element, run_count);
+    sort(us_mul, run_count);
+    int median = run_count / 2;
+    printf("Total time: \t %fs  |  microsecs/element: %f  |  microsecs/mul: %f\n\n",
+           total_time[median], us_element[median], us_mul[median]); 
 
 
     free(A);
