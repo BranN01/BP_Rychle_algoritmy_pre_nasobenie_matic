@@ -3,7 +3,7 @@
 #	Author: xpetkob00 Branislav Peťko
 
 CC=gcc
-CFLAGS=-std=c17 -pedantic -Wall -Wextra -O3 -march=native #-fno-ipa-cp-clone
+CFLAGS=-std=c17 -pedantic -Wall -Wextra -O3 -march=native
 N = 4096
 
 
@@ -22,7 +22,7 @@ debug: clean main
 
 
 test:
-	@for algorithm in strassen; do 										\
+	@for algorithm in naive block; do 										\
 		n=2; 															\
 		for idx in $$(seq 1 12); do 									\
 			$(CC) $(CFLAGS) -DN=$$n src/$$algorithm.c -o $$algorithm; 	\
@@ -35,7 +35,7 @@ test:
 
 
 clean:
-	rm -f naive block strassen graphs.zip out.txt
+	rm -f naive block strassen graphs.zip
 
 
 gzip: clean

@@ -62,6 +62,7 @@ static void naive(mtx_t *A, mtx_t *B, mtx_t *C) {
 }
 
 
+// insertion sort
 void sort(double *array, int n) {
 
     for(int idx = 1; idx < n; idx++) {
@@ -97,6 +98,7 @@ int main() {
     debug_mtx_print(A, N);
     debug_mtx_print(B, N);
 
+    // how many times will the algorithm run
     int run_count;
     switch(N) {
         case 2: case 4: case 8: case 16: case 32: case 64: case 128: case 256:
@@ -114,6 +116,7 @@ int main() {
     fprintf(stdout, "\n[INFO] \t Matrix %ldx%ld -> Naive -> Run count: %d\n", (size_t)N, (size_t)N, run_count);
 
 
+    // algorithm measurement
     fprintf(stderr, "Progress: ");
     for(int idx = 0; idx < run_count; idx++) {
         memset(C, 0, (size_t)N * N * sizeof(mtx_t));
@@ -134,6 +137,7 @@ int main() {
     }
     fprintf(stderr, "\n\n");
     
+    // getting median and final result
     debug_mtx_print(C, N);
     sort(total_time, run_count);
     int median = run_count / 2;
