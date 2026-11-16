@@ -18,6 +18,11 @@
 #define N 4096
 #endif
 
+// optimal switch to naive algorithm for block algorithm
+#ifndef NAIVE_START
+#define NAIVE_START 8
+#endif
+
 #ifdef DEBUG
     #define debug_mtx_print(matrix, n)                          \
         do{                                                     \
@@ -45,8 +50,6 @@
     #define debug_mtx_print(matrix, n)
     #define debug_array_print(array, n)
 #endif
-
-#define NAIVE_START 1
 
 typedef double mtx_t;
 
@@ -144,7 +147,7 @@ int main() {
 
     double total_time[run_count];
     int step = run_count / 10;
-    fprintf(stdout, "\n[INFO] \t Matrix %ldx%ld -> Block -> Run count: %d\n", (size_t)N, (size_t)N, run_count);
+    fprintf(stdout, "\n[INFO] \t Matrix %ldx%ld -> Block -> Cut off: %d -> Run count: %d\n", (size_t)N, (size_t)N, NAIVE_START, run_count);
 
 
     // algorithm measurement
